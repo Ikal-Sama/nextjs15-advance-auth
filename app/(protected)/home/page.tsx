@@ -1,14 +1,8 @@
-"use client";
+import { currentUser } from "@/lib/auth";
 
-import { signOutAndRedirect } from "@/actions/sign-out";
-import { useCurrentUser } from "@/hooks/use-current-user";
+export default async function SettingsPage() {
+  const user = await currentUser();
 
-export default function SettingsPage() {
-  const user = useCurrentUser();
-
-  const onClick = () => {
-    signOutAndRedirect();
-  };
   return (
     <div className="p-10 rounded-xl bg-white w-[600px]">
       <h1 className="text-xl font-medium">Welcome, {user?.name}</h1>

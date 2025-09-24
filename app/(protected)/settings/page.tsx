@@ -1,10 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { UpdateUserForm } from "@/components/user/update-user-form";
+import { currentUser } from "@/lib/auth";
+import { User } from "@/types/user";
 
-const SettingsPage = () => {
+const SettingsPage = async () => {
+  const user = await currentUser();
   return (
     <Card className="w-[600px]">
-      <UpdateUserForm />
+      <UpdateUserForm user={user as User} />
     </Card>
   );
 };

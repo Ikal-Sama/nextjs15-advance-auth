@@ -1,4 +1,5 @@
 "use client";
+
 import { UpdateUserSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,11 +31,15 @@ import { FormSuccess } from "../form-success";
 import { useState, useTransition } from "react";
 import { useSession } from "next-auth/react";
 import { UserRole } from "@prisma/client";
+import { User } from "@/types/user";
 
-export const UpdateUserForm = () => {
+interface UserProps {
+  user: User;
+}
+
+export const UpdateUserForm = ({ user }: UserProps) => {
   const [isPending, startTransition] = useTransition();
   const { update } = useSession();
-  const user = useCurrentUser();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -46,6 +51,13 @@ export const UpdateUserForm = () => {
       name: user?.name || "",
       email: user?.email || "",
       role: user?.role || UserRole.USER,
+    },
+    values: {
+      name: user?.name || undefined,
+      email: user?.email || undefined,
+      role: user?.role || UserRole.USER,
+      password: undefined,
+      newPassword: undefined,
     },
   });
 
@@ -182,7 +194,11 @@ export const UpdateUserForm = () => {
           <FormError message={error} />
           <FormSuccess message={success} />
 
-          <Button type="submit" disabled={isPending}>
+          <Button
+            type="submit"
+            disabled={!form.formState.isDirty || isPending}
+            className="disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {isPending ? "Saving..." : "Save changes"}
           </Button>
         </form>
